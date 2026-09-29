@@ -23,18 +23,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import mx.tec.tareas.domain.Tarea
 import mx.tec.tareas.ui.components.TarjetaTarea
-import mx.tec.tareas.ui.state.AppViewModelProvider
 import mx.tec.tareas.ui.state.TareasViewModel
 import mx.tec.tareas.ui.theme.TareasTema
 import mx.tec.tareas.ui.theme.TareasTheme
 
-/** Con estado: el ViewModel lo arma la fábrica, con las piezas del contenedor. */
+/** Con estado: le pide a Hilt el ViewModel ya armado, con todo lo que necesita. */
 @Composable
 fun PantallaTareas(
-    vm: TareasViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    vm: TareasViewModel = hiltViewModel()
 ) {
     ListaTareas(
         tareas = vm.tareas,
