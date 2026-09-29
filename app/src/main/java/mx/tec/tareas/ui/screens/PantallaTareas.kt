@@ -26,13 +26,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.tec.tareas.domain.Tarea
 import mx.tec.tareas.ui.components.TarjetaTarea
+import mx.tec.tareas.ui.state.AppViewModelProvider
 import mx.tec.tareas.ui.state.TareasViewModel
 import mx.tec.tareas.ui.theme.TareasTema
 import mx.tec.tareas.ui.theme.TareasTheme
 
-/** Con estado: crea su ViewModel. */
+/** Con estado: el ViewModel lo arma la fábrica, con las piezas del contenedor. */
 @Composable
-fun PantallaTareas(vm: TareasViewModel = viewModel()) {
+fun PantallaTareas(
+    vm: TareasViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     ListaTareas(
         tareas = vm.tareas,
         cargando = vm.cargando,
@@ -52,37 +55,66 @@ fun ListaTareas(
 
     Scaffold(
         modifier = modifier,
-        topBar = { Encabezado(pendientes = tareas.size, cargando = cargando, onRecargar = onRecargar) }
+        topBar = {
+            Encabezado(
+                pendientes = tareas.size,
+                cargando = cargando,
+                onRecargar = onRecargar
+            )
+        }
     ) { padding ->
         if (cargando) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else {
             LazyColumn(
                 modifier = Modifier.padding(padding),
-                contentPadding = PaddingValues(horizontal = espaciado.lg, vertical = espaciado.sm),
+                contentPadding = PaddingValues(
+                    horizontal = espaciado.lg,
+                    vertical = espaciado.sm
+                ),
                 verticalArrangement = Arrangement.spacedBy(espaciado.md)
             ) {
-                items(tareas) { tarea -> TarjetaTarea(tarea) }
+                items(tareas) { tarea ->
+                    TarjetaTarea(tarea)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun Encabezado(pendientes: Int, cargando: Boolean, onRecargar: () -> Unit) {
+private fun Encabezado(
+    pendientes: Int,
+    cargando: Boolean,
+    onRecargar: () -> Unit
+) {
     val espaciado = TareasTema.espaciado
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(start = espaciado.lg, end = espaciado.lg, top = espaciado.xl, bottom = espaciado.md),
+            .padding(
+                start = espaciado.lg,
+                end = espaciado.lg,
+                top = espaciado.xl,
+                bottom = espaciado.md
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(Modifier.weight(1f)) {
-            Text("Mis tareas", style = MaterialTheme.typography.headlineLarge)
+            Text(
+                "Mis tareas",
+                style = MaterialTheme.typography.headlineLarge
+            )
+
             Text(
                 text = when {
                     cargando -> "Cargando…"
@@ -93,8 +125,15 @@ private fun Encabezado(pendientes: Int, cargando: Boolean, onRecargar: () -> Uni
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        FilledTonalIconButton(onClick = onRecargar, enabled = !cargando) {
-            Icon(Icons.Default.Refresh, contentDescription = "Recargar")
+
+        FilledTonalIconButton(
+            onClick = onRecargar,
+            enabled = !cargando
+        ) {
+            Icon(
+                Icons.Default.Refresh,
+                contentDescription = "Recargar"
+            )
         }
     }
 }
@@ -115,12 +154,18 @@ private fun ListaTareasPreview() {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0F1512, name = "Oscuro")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF0F1512,
+    name = "Oscuro"
+)
 @Composable
 private fun ListaTareasOscuroPreview() {
     TareasTheme(oscuro = true) {
         ListaTareas(
-            tareas = listOf(Tarea("Tarea de prueba", "Pruebas", "Nunca")),
+            tareas = listOf(
+                Tarea("Tarea de prueba", "Pruebas", "Nunca")
+            ),
             cargando = false,
             onRecargar = {}
         )
