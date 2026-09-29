@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mx.tec.tareas.data.TareasRepository
-import mx.tec.tareas.data.TareasRepositoryReal
+import mx.tec.tareas.data.TareasRepositoryFalso
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -13,6 +13,6 @@ abstract class RepositorioModule {
 
     @Binds
     abstract fun bindTareasRepo(
-        impl: TareasRepositoryReal
+        impl: TareasRepositoryFalso
     ): TareasRepository
 }
